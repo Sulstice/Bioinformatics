@@ -63,6 +63,7 @@ def alignment(iStart, jStart, kStart, LengthSeq1, LengthSeq2, LengthSeq3):
     lengthj = LengthSeq2 - jStart
     lengthk = LengthSeq3 - kStart
 
+    print (lengthi)
     if (lengthi <= 1):
         return
 
@@ -86,7 +87,7 @@ def alignment(iStart, jStart, kStart, LengthSeq1, LengthSeq2, LengthSeq3):
     for j in range(0, lengthj + 1):
         for k in range(0, lengthk + 1):
             scoreXYplane = 0
-            subscore = [-10000, -10000, -10000]
+            subscore = np.array([-10000, -10000, -10000])
 
             subscore[0] = score1[0, j - 1, k - 1] + scoredArray[4, seqLen2[jStart + j], seqLen3[kStart + k]]
             subscore[1] = score1[0, j - 1, k] + scoredArray[4, seqLen2[jStart + j], 4]
@@ -109,7 +110,7 @@ def alignment(iStart, jStart, kStart, LengthSeq1, LengthSeq2, LengthSeq3):
 
         for x in range(1, lengthj + 1):
             scoreXYplane = 0
-            subscore2 = [-10000, -10000, -10000]
+            subscore2 = np.array([-10000, -10000, -10000])
 
             subscore2[0] = score1[(lengthy + 1)%2, x - 1, 0] + scoredArray[seqLen1[iStart + i], seqLen2[jStart + x], 4]
             subscore2[1] = score1[(lengthy + 1)%2, x, 0] + scoredArray[seqLen1[iStart + i], 4, 4]
@@ -125,7 +126,7 @@ def alignment(iStart, jStart, kStart, LengthSeq1, LengthSeq2, LengthSeq3):
 
         for z in range(1, lengthk + 1):
 
-            subscore3 = [-10000, -10000, -10000]
+            subscore3 = np.array([-10000, -10000, -10000])
             scoreXYplane = 0
 
             subscore3[0] = score1[((lengthy + 1) % 2), 0, z - 1] + scoredArray[seqLen1[iStart + i], 4, seqLen3[kStart + z]]
@@ -142,7 +143,7 @@ def alignment(iStart, jStart, kStart, LengthSeq1, LengthSeq2, LengthSeq3):
 
         for j in range(1, lengthj):
             for k in range(1, lengthk):
-                subscore4 = [-10000, -10000, -10000, -10000, -10000, -10000, -10000]
+                subscore4 = np.array([-10000, -10000, -10000, -10000, -10000, -10000, -10000])
                 scoreXYplane = 0
 
                 subscore4[0] = score1[(lengthy + 1)%2, j - 1, k - 1] + scoredArray[seqLen1[iStart + i], seqLen2[jStart + j], seqLen3[kStart + k]]
@@ -161,7 +162,7 @@ def alignment(iStart, jStart, kStart, LengthSeq1, LengthSeq2, LengthSeq3):
 
                 score1[lengthy, j, k] = scoreXYplane
 
-        forwardScore = lengthy
+    forwardScore = lengthy
 
     #Score Backward
 
@@ -191,12 +192,13 @@ def alignment(iStart, jStart, kStart, LengthSeq1, LengthSeq2, LengthSeq3):
 
     lengthy = 0
 
-    for i in range(lengthi - 1, mid - iStart, -1):
+    for i in range(lengthi - 1, mid - iStart - 1, -1):
+
         lengthy = (lengthy + 1) % 2
 
         score2[lengthy, lengthj, lengthk] = score2[(lengthy + 1) % 2, lengthj, lengthk] + scoredArray[seqLen1[iStart + i + 1], 4, 4]
-        for x in range(lengthj - 1, 0, -1):
-            subscore6 = [-10000, -10000, -10000]
+        for x in range(lengthj - 1, -1, -1):
+            subscore6 = np.array([-10000, -10000, -10000])
             scoreXYplane = 0
 
             subscore6[0] = score2[(lengthy + 1) % 2, x + 1, lengthk] + scoredArray[seqLen1[iStart + i + 1], seqLen2[jStart + x + 1], 4]
@@ -212,8 +214,8 @@ def alignment(iStart, jStart, kStart, LengthSeq1, LengthSeq2, LengthSeq3):
 
             score2[lengthy, x, lengthk] = scoreXYplane
 
-        for x in range(lengthk - 1, 0, -1):
-            subscore7 = [-10000, -10000, -10000]
+        for x in range(lengthk - 1, -1, -1):
+            subscore7 = np.array([-10000, -10000, -10000])
             scoreXYplane = 0
 
             subscore7[0] = score2[(lengthy + 1) % 2, lengthj, x + 1] + scoredArray[seqLen1[iStart + i + 1], 4, seqLen3[kStart + x + 1]]
@@ -228,19 +230,20 @@ def alignment(iStart, jStart, kStart, LengthSeq1, LengthSeq2, LengthSeq3):
 
             score2[lengthy, lengthj, x] = scoreXYplane
 
-        for j in range(lengthj - 1, 0, -1):
-            for k in range(lengthk - 1, 0, -1):
+        for j in range(lengthj - 1, -1, -1):
+            for k in range(lengthk - 1, -1, -1):
 
-                subscore8 = [-10000, -10000, -10000, -10000, -10000, -10000, -10000]
+                subscore8 = np.array([-10000, -10000, -10000, -10000, -10000, -10000, -10000])
+
                 scoreXYplane = 0
 
                 subscore8[0] = score2[(lengthy + 1) % 2, j + 1, k + 1] + scoredArray[seqLen1[iStart + i + 1], seqLen2[jStart + j + 1], seqLen3[kStart + k + 1]]
-                subscore8[1] = score1[(lengthy + 1) % 2, j + 1, k] + scoredArray[seqLen1[iStart + i + 1], seqLen2[jStart + j + 1], 4]
-                subscore8[2] = score1[(lengthy + 1) % 2, j, k + 1] + scoredArray[seqLen1[iStart + i + 1], 4, seqLen3[kStart + k + 1]]
-                subscore8[3] = score1[lengthy, j + 1, k + 1] + scoredArray[4, seqLen2[jStart + j + 1], seqLen3[kStart + k + 1]]
-                subscore8[4] = score1[(lengthy + 1) % 2, j + 1, k] + scoredArray[seqLen1[iStart + i + 1], 4, 4]
-                subscore8[5] = score1[lengthy, j + 1, k] + scoredArray[4, seqLen2[jStart + j + 1], 4]
-                subscore8[6] = score1[lengthy, j, k + 1] + scoredArray[4, 4, seqLen3[kStart + k + 1]]
+                subscore8[1] = score2[(lengthy + 1) % 2, j + 1, k] + scoredArray[seqLen1[iStart + i + 1], seqLen2[jStart + j + 1], 4]
+                subscore8[2] = score2[(lengthy + 1) % 2, j, k + 1] + scoredArray[seqLen1[iStart + i + 1], 4, seqLen3[kStart + k + 1]]
+                subscore8[3] = score2[lengthy, j + 1, k + 1] + scoredArray[4, seqLen2[jStart + j + 1], seqLen3[kStart + k + 1]]
+                subscore8[4] = score2[(lengthy + 1) % 2, j + 1, k] + scoredArray[seqLen1[iStart + i + 1], 4, 4]
+                subscore8[5] = score2[lengthy, j + 1, k] + scoredArray[4, seqLen2[jStart + j + 1], 4]
+                subscore8[6] = score2[lengthy, j, k + 1] + scoredArray[4, 4, seqLen3[kStart + k + 1]]
 
                 scoreXYplane = subscore8[0]
 
@@ -254,6 +257,7 @@ def alignment(iStart, jStart, kStart, LengthSeq1, LengthSeq2, LengthSeq3):
 
     maxScore = score1[forwardScore, 0 , 0] + score2[backwardScore, 0, 0]
 
+    print ("This is mid:" + str(mid))
     midX = mid
     midY = jStart
     midZ = kStart
@@ -272,10 +276,9 @@ def alignment(iStart, jStart, kStart, LengthSeq1, LengthSeq2, LengthSeq3):
         print ("Alignment Score:" + str(maxScore))
 
     alignment(iStart, jStart, kStart, midX, midY, midZ)
-    alignment(midX, midY, midZ, seqLen1, seqLen2, seqLen3)
+    alignment(midX, midY, midZ, LengthSeq1, LengthSeq2, LengthSeq3)
 
     return
-
 
 def sequenceReturnNumbers(i):
 
